@@ -71,9 +71,9 @@ state.LoadProfile = function(profilePath)
         print(chat.header('LuAshitacast') .. chat.error('Failed to load profile: ') .. chat.color1(2, shortFileName));
         print(chat.header('LuAshitacast') .. chat.error(loadError));
         return;
-	end
-	gProfile = success();
-	if (gProfile ~= nil) then
+    end
+    gProfile = success();
+    if (gProfile ~= nil) then
         print(chat.header('LuAshitacast') .. chat.message('Loaded profile: ') .. chat.color1(2, shortFileName));
         if (gProfile.OnLoad ~= nil) and (type(gProfile.OnLoad) == 'function') then
             gProfile.FilePath = profilePath;

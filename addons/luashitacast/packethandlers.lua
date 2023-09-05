@@ -85,7 +85,7 @@ packethandlers.HandleIncoming0x28 = function(e)
                     print(chat.header('LuAshitacast') .. chat.message('Pet action ending due to action packet of type ' .. tostring(actionType) .. ' with parameters indicating interruption.'));
                 end
                 gState.PetAction = nil;
-				return;
+                return;
             end
         end
 
@@ -232,41 +232,38 @@ end
 
 packethandlers.HandleItemTradePacket = function(packet)
 
-	local itemCount = struct.unpack('B', packet, 0x3C + 0x01);
-	
-	if(itemCount == 1) then 
-		local targetIndex = struct.unpack('H', packet, 0x3A + 0x01);
-		local npcId = struct.unpack('H', packet, 0x04 + 0x01);
-		local itemIndex = struct.unpack('B', packet, 0x30 + 0x01);
-		local itemContainer = 0;
-		local item = AshitaCore:GetMemoryManager():GetInventory():GetContainerItem(itemContainer, itemIndex);
+    local itemCount = struct.unpack('B', packet, 0x3C + 0x01);
+    
+    if(itemCount == 1) then 
+        local targetIndex = struct.unpack('H', packet, 0x3A + 0x01);
+        local npcId = struct.unpack('H', packet, 0x04 + 0x01);
+        local itemIndex = struct.unpack('B', packet, 0x30 + 0x01);
+        local itemContainer = 0;
+        local item = AshitaCore:GetMemoryManager():GetInventory():GetContainerItem(itemContainer, itemIndex);
 
-		if (item == nil) or (item.Id == 0) or (item.Count == 0) then
-			gState.PlayerAction.Completion = os.clock() + gSettings.ItemBase + gSettings.ItemOffset;
-		else
-			gState.DelayedEquip = {};
-			gState.PlayerAction = { Block = false };
-			gState.PlayerAction.Packet = packet:totable();
-			gState.PlayerAction.Target = targetIndex;
-			gState.PlayerAction.Type = 'TradeItem';
-
-			gState.PlayerAction.Resource = AshitaCore:GetResourceManager():GetItemById(item.Id);
-			gState.PlayerAction.Completion = os.clock() + (gState.PlayerAction.Resource.CastTime * 0.25) + gSettings.ItemOffset;
-			
-			local itemname = gState.PlayerAction.Resource.Name[1];
-			if (itemname == 'Hatchet') or (itemname == 'Pickaxe') or (itemname == 'Sickle') then
-			
-				gState.HandleEquipEvent('HandleHelm', 'auto');
-			end
-		end 
-		
-		if (gState.PlayerAction.Block == true) then
-			gState.PlayerAction = nil;
-			return;
-		end
-		
-		gState.Inject(0x36, gState.PlayerAction.Packet);
-	end 
+        if (item == nil) or (item.Id == 0) or (item.Count == 0) then
+            gState.PlayerAction.Completion = os.clock() + gSettings.ItemBase + gSettings.ItemOffset;
+        else
+            local itemname = gState.PlayerAction.Resource.Name[1];
+            if (itemname == 'Hatchet') or (itemname == 'Pickaxe') or (itemname == 'Sickle') then
+                gState.DelayedEquip = {};
+                gState.PlayerAction = { Block = false };
+                gState.PlayerAction.Packet = packet:totable();
+                gState.PlayerAction.Target = targetIndex;
+                gState.PlayerAction.Type = 'TradeItem';
+                gState.PlayerAction.Resource = AshitaCore:GetResourceManager():GetItemById(item.Id);
+                gState.PlayerAction.Completion = os.clock() + (gState.PlayerAction.Resource.CastTime * 0.25) + gSettings.ItemOffset;
+                gState.HandleEquipEvent('HandleHelm', 'auto');
+            end
+        end 
+        
+        if (gState.PlayerAction.Block == true) then
+            gState.PlayerAction = nil;
+            return;
+        end
+        
+        gState.Inject(0x36, gState.PlayerAction.Packet);
+    end 
 end
 
 
@@ -301,7 +298,7 @@ packethandlers.HandleOutgoingChunk = function(e)
             newPositionY = struct.unpack('f', e.chunk_data, offset + 0x0C + 1);
         elseif (id == 0x36) then
             gPacketHandlers.HandleItemTradePacket(struct.unpack('c' .. size, e.chunk_data, offset + 1));
-		elseif (id == 0x37) then
+        elseif (id == 0x37) then
             gPacketHandlers.HandleItemPacket(struct.unpack('c' .. size, e.chunk_data, offset + 1));
         end
         offset = offset + size;
@@ -347,7 +344,7 @@ packethandlers.HandleOutgoingPacket = function(e)
             elseif (e.id == 0x36) then
                 gPacketHandlers.HandleItemTradePacket(struct.unpack('c' .. e.size, e.data, 1));
                 e.blocked = true;
-			elseif (e.id == 0x37) then
+            elseif (e.id == 0x37) then
                 gPacketHandlers.HandleItemPacket(struct.unpack('c' .. e.size, e.data, 1));
                 e.blocked = true;
             end

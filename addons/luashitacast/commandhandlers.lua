@@ -107,7 +107,7 @@ commands.HandleCommand = function(e)
             local i = 3;
             while i < argCount do
                 set[args[i]] = args[i + 1];
-				i = i + 2;
+                i = i + 2;
             end
             gFunc.ForceEquipSet(set);
         end

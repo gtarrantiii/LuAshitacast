@@ -110,7 +110,7 @@ end
 
 data.GetAccountFlags = function()
     local subPointer = ashita.memory.read_uint32(gState.pWardrobe);
-	subPointer = ashita.memory.read_uint32(subPointer);
+    subPointer = ashita.memory.read_uint32(subPointer);
     return ashita.memory.read_uint8(subPointer + 0xB4);
 end
 
@@ -188,7 +188,7 @@ data.GetAugment = function(item)
         augment.Type = 'Magian';
         augment.Trial = ashita.bits.unpack_be(itemTable, 80, 15);
         augment.TrialComplete = (ashita.bits.unpack_be(itemTable, 95, 1) == 1);
-		maxAugments = 4;
+        maxAugments = 4;
     else
         augment.Type = 'Oseem';
     end
@@ -433,7 +433,7 @@ data.GetBuffCount = function(matchBuff)
         local matchText = string.lower(matchBuff);
         for _, buff in pairs(buffs) do
             local buffString = AshitaCore:GetResourceManager():GetString("buffs.names", buff):trimend('\x00');
-			if (buffString ~= nil) and (string.lower(buffString) == matchText) then
+            if (buffString ~= nil) and (string.lower(buffString) == matchText) then
                 count = count + 1;
             end
         end

@@ -651,7 +651,7 @@ end</code></pre><br>
 <pre><code>profile.HandleMidcast = function()
     local MndDebuffs = T{ 'Slow', 'Paralyze', 'Slow II', 'Paralyze II', 'Addle', 'Addle II' };
     local ElementalDebuffs = T{ 'Burn', 'Rasp', 'Drown', 'Choke', 'Frost', 'Shock' };
-    local action = gData.GetAction();				
+    local action = gData.GetAction();                
     if (action.Skill == 'Enfeebling Magic') then
         if (MndDebuffs:contains(action.Name)) then
             gFunc.EquipSet(sets.DebuffMND);
@@ -836,7 +836,7 @@ end</code></pre>
 <pre><code>profile.HandleMidcast = function()
     local MndDebuffs = T{ 'Slow', 'Paralyze', 'Slow II', 'Paralyze II', 'Addle', 'Addle II' };
     local ElementalDebuffs = T{ 'Burn', 'Rasp', 'Drown', 'Choke', 'Frost', 'Shock' };
-    local action = gData.GetAction();				
+    local action = gData.GetAction();                
     if (action.Skill == 'Enfeebling Magic') then
         if (MndDebuffs:contains(action.Name)) then
             gFunc.EquipSet(sets.DebuffMND);
@@ -931,9 +931,9 @@ end</code></pre>
         Now, your swaps are using the variables from varhelper.  But, we still have to change our commands.  We do this with varhelper.AdvanceToggle(name) and varhelper.AdvanceCycle(name).
 <pre><code>profile.HandleCommand = function(args)
     if (args[1] == 'idlerefresh') then
-		varhelper.AdvanceToggle('UseRefreshIdle');
+        varhelper.AdvanceToggle('UseRefreshIdle');
     elseif (args[1] == 'tpset') then
-		varhelper.AdvanceCycle('TpVariant');
+        varhelper.AdvanceCycle('TpVariant');
     end
 end</code></pre>
 
