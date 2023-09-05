@@ -33,6 +33,25 @@ packethandlers.HandleIncoming0x1B = function(e)
     end
 end
 
+packethandlers.HandleIncoming0x5E = function(e)
+    local regioninfo = {}
+    local packet = struct.unpack('c' .. e.size, e.data, 1);
+    for i, region in pairs(gData.Constants.ConquestRegions) do
+        if(i==19)then break end --only first 18 regions are under conquest control 
+        local owner = (struct.unpack('b', packet, 0x1D + (i*4) + 0x01)-1);
+        local ownerstring = gData.Constants.ConquestNations[owner];
+        regioninfo[i] = ownerstring;
+    end
+
+    --default the cities 
+    regioninfo[19] = 'San d\'Oria';
+    regioninfo[20] = 'Bastok';
+    regioninfo[21] = 'Windurst';
+    regioninfo[22] = 'Jueno';
+
+    gData.Conquest = regioninfo;
+end
+
 packethandlers.HandleIncoming0x61 = function(e)
     local job = struct.unpack('B', e.data, 0x0C + 1);
     if (job ~= gState.PlayerJob) then
@@ -334,6 +353,8 @@ packethandlers.HandleIncomingPacket = function(e)
         gPacketHandlers.HandleIncoming0x61(e);
     elseif (e.id == 0x028) then
         gPacketHandlers.HandleIncoming0x28(e);
+    elseif (e.id == 0x5E) then
+        gPacketHandlers.HandleIncoming0x5E(e);
     end
 end
 

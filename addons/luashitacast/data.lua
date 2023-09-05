@@ -465,6 +465,19 @@ data.GetEnvironment = function()
     if type(environmentTable.Area) == 'string' then
         environmentTable.Area = environmentTable.Area:trimend('\x00');
     end
+    environmentTable.AreaId = AshitaCore:GetMemoryManager():GetParty():GetMemberZone(0);
+    environmentTable.RegionId = gFunc.AreaConquestRegion(environmentTable.AreaId);
+    environmentTable.Region = gData.Constants.ConquestRegions[environmentTable.RegionId];
+    if (gData.Conquest ~= nil) then
+        environmentTable.RegionOwner = gData.Conquest[environmentTable.RegionId];
+    else
+        if(environmentTable.RegionId < 19) then 
+            print('Conquest owner unavailable, load your region map or change zones to update.');
+            environmentTable.RegionOwner ='Unknown';
+        else
+            environmentTable.RegionOwner ='Beastmen';
+        end
+    end
     local timestamp = gData.GetTimestamp();
     environmentTable.Day = gData.Constants.WeekDay[(timestamp.day % 8) + 1];
     environmentTable.DayElement = gData.Constants.WeekDayElement[(timestamp.day % 8) + 1];
@@ -618,7 +631,7 @@ data.GetPlayer = function()
     playerTable.SubJobLevel = pPlayer:GetJobLevel(subJob);
     playerTable.SubJobSync = pPlayer:GetSubJobLevel();
     playerTable.TP = pParty:GetMemberTP(0);
-
+    playerTable.Nation = gData.Constants.ConquestNations[pPlayer:GetNation()];
     return playerTable;
 end
 

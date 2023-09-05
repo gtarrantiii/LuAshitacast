@@ -1287,4 +1287,44 @@ constants.DelveAugments = {
     [254] = { Stat='303'},
 };
 
+constants.ConquestNations = {
+    [0] = 'San d\'Oria',
+    [1] = 'Bastok',
+    [2] = 'Windurst',
+    [3] = 'Beastmen',
+    [255] = 'Neutral'
+};
+
+constants.ConquestRegions = {
+    [0] = 'Ronfaure',
+    [1] = 'Zulkheim',
+    [2] = 'Norvallen',
+    [3] = 'Gustaberg',
+    [4] = 'Derfland',
+    [5] = 'Sarutabaruta',
+    [6] = 'Kolshushu',
+    [7] = 'Aragoneu',
+    [8] = 'Fauregandi',
+    [9] = 'Valdeaunia',
+    [10] = 'Qufim',
+    [11] = 'Li\'Telor',
+    [12] = 'Kuzotz',
+    [13] = 'Vollbow',
+    [14] = 'Elshimo Lowlands',
+    [15] = 'Elshimo Uplands',
+    [16] = 'Tu\'Lia',
+    [17] = 'Movalpolos',
+    [18] = 'Tavnazia',
+    [19] = 'Sandoria',
+    [20] = 'Bastok',
+    [21] = 'Windurst',
+    [22] = 'Jeuno',
+    [23] = 'Dynamis',
+    [24] = 'Tavnazian Marquisate',
+    [25] = 'Promyvion',
+    [26] = 'Lumoria',
+    [27] = 'Limbus',
+    [255] = 'Unknown'
+};
+
 return constants;

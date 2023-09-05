@@ -564,6 +564,75 @@ local SetMidDelay = function(delay)
     gState.DelayedEquip.Timer = os.clock() + delay;
 end
 
+--returns a conquest region id (based upon ASB latest) for a provided area id
+local AreaConquestRegion = function(areaid)
+    if(areaid == 100 or areaid == 101 or areaid == 139 or areaid == 140 or areaid == 141 or areaid == 142 or areaid == 167 or areaid == 190) then 
+        return 0;--RONFAURE 
+    elseif(areaid == 102 or areaid == 103 or areaid == 108 or areaid == 193 or areaid == 196 or areaid == 248) then 
+        return 1;--ZULKHEIM
+    elseif(areaid == 1 or areaid == 2 or areaid == 104 or areaid == 105 or areaid == 149 or areaid == 150 or areaid == 195) then 
+        return 2;--NORVALLEN
+    elseif(areaid == 191 or areaid == 173 or areaid == 106 or areaid == 107 or areaid == 143 or areaid == 144 or areaid == 172) then 
+        return 3;--GUSTABERG
+    elseif(areaid == 147 or areaid == 197 or areaid == 109 or areaid == 148 or areaid == 110) then
+        return 4;--DERFLAND
+    elseif(areaid == 146 or areaid == 115 or areaid == 116 or areaid == 145 or areaid == 170 or areaid == 192 or areaid == 194 or areaid == 169) then 
+        return 5;--SARUTABARUTA 
+    elseif(areaid == 4 or areaid == 118 or areaid == 213 or areaid == 3 or areaid == 198 or areaid == 249 or areaid == 117) then 
+        return 6;--KOLSHUSHU 
+    elseif(areaid == 152 or areaid == 7 or areaid == 8 or areaid == 151 or areaid == 200 or areaid == 119 or areaid == 120) then 
+        return 7;--ARAGONEU 
+    elseif(areaid == 111 or areaid == 203 or areaid == 204 or areaid == 9 or areaid == 206 or areaid == 166 or areaid == 10) then 
+        return 8;--FAUREGANDI
+    elseif(areaid == 6 or areaid == 161 or areaid == 162 or areaid == 165 or areaid == 112 or areaid == 5) then 
+        return 9;--VALDEAUNIA
+    elseif(areaid == 127 or areaid == 126 or areaid == 179 or areaid == 157 or areaid == 158 or areaid == 184) then 
+        return 10;--QUFIMISLAND
+    elseif(areaid == 153 or areaid == 154 or areaid == 202 or areaid == 251 or areaid == 122 or areaid == 121) then 
+        return 11;--LITELOR
+    elseif(areaid == 209 or areaid == 114 or areaid == 125 or areaid == 208 or areaid == 168 or areaid == 247) then 
+        return 12;--KUZOTZ
+    elseif(areaid == 113 or areaid == 201 or areaid == 174 or areaid == 212 or areaid == 128)then 
+        return 13;--VOLLBOW
+    elseif(areaid == 250 or areaid == 252 or areaid == 176 or areaid == 123)then 
+        return 14;--ELSHIMOLOWLANDS
+    elseif(areaid == 207 or areaid == 211 or areaid == 160 or areaid == 205 or areaid == 163 or areaid == 159 or areaid == 124) then 
+        return 15;--ELSHIMOUPLANDS
+    elseif(areaid == 181 or areaid == 180 or areaid == 130 or areaid == 178 or areaid == 177)then 
+        return 16;--TULIA
+    elseif(areaid == 11 or areaid == 12 or areaid == 13)then 
+        return 17;--MOVALPOLOS
+    elseif(areaid == 24 or areaid == 25 or areaid == 31 or areaid == 27 or areaid == 29 or areaid == 30 or areaid == 28 or areaid == 32) then    
+        return 18;--TAVNAZIA
+    elseif(areaid == 230 or areaid == 231 or areaid == 232 or areaid == 233)then 
+        return 19;--SANDORIA
+    elseif(areaid == 234 or areaid == 235 or areaid == 236 or areaid == 237)then 
+        return 20;--BASTOK
+    elseif(areaid == 238 or areaid == 239 or areaid == 240 or areaid == 241 or areaid == 242)then 
+        return 21;--WINDURST
+    elseif(areaid == 243 or areaid == 244 or areaid == 245 or areaid == 246)then 
+        return 22;--JEUNO
+    elseif(areaid == 134 or areaid == 135 or areaid == 185 or areaid == 186 or areaid == 187 or areaid == 188 or areaid == 39 or areaid == 40 or areaid == 41 or areaid == 42) then
+        return 23;--DYNAMIS 
+    elseif(areaid == 26)then 
+        return 24;--TAVNAZIAN_MARQ
+    elseif(areaid == 33 or areaid == 36 or areaid == 35 or areaid == 34)then 
+        return 25;--LUMORIA
+    elseif(areaid == 37 or areaid == 38)then 
+        return 26;--LIMBUS
+    else 
+        return 255;
+    end
+end 
+
+--switch case support for logical flows
+local Switch = function(param, case_table)
+    local case = case_table[param]
+    if case then return case() end
+    local def = case_table['default']
+    return def and def() or nil
+end
+
 local exports = {
     AddSet = AddSet,
     ApplyBaseSets = ApplyBaseSets,
@@ -589,6 +658,8 @@ local exports = {
     LockSet = LockSet,
     LockStyle = LockStyle,
     SetMidDelay = SetMidDelay,
+    AreaConquestRegion = AreaConquestRegion,
+    Switch = Switch,
 };
 
 return exports;
