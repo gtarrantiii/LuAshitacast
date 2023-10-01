@@ -1,1 +1,8 @@
 *.zip
+/.vs/LuAshitacast/FileContentIndex/merges
+*.vsidx
+/.vs/LuAshitacast/FileContentIndex/ab1f0a64-1f35-4cf9-897b-bbc9f24fb22a.vsidx
+/.vs/LuAshitacast/FileContentIndex/b23c06ec-7c50-4f65-a1ed-abe77c44df6e.vsidx
+/.vs/LuAshitacast/v17/.wsuo
+/.vs/slnx.sqlite
+/.vs/VSWorkspaceState.json
