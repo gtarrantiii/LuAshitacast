@@ -564,7 +564,13 @@ local SetMidDelay = function(delay)
     gState.DelayedEquip.Timer = os.clock() + delay;
 end
 
---returns a conquest region id (based upon ASB latest) for a provided area id
+local Switch = function(param, case_table)
+    local case = case_table[param]
+    if case then return case() end
+    local def = case_table['default']
+    return def and def() or nil
+end
+
 local AreaConquestRegion = function(areaid)
     if(areaid == 100 or areaid == 101 or areaid == 139 or areaid == 140 or areaid == 141 or areaid == 142 or areaid == 167 or areaid == 190) then 
         return 0;--RONFAURE 
@@ -625,14 +631,6 @@ local AreaConquestRegion = function(areaid)
     end
 end 
 
---switch case support for logical flows
-local Switch = function(param, case_table)
-    local case = case_table[param]
-    if case then return case() end
-    local def = case_table['default']
-    return def and def() or nil
-end
-
 local exports = {
     AddSet = AddSet,
     ApplyBaseSets = ApplyBaseSets,
@@ -658,8 +656,8 @@ local exports = {
     LockSet = LockSet,
     LockStyle = LockStyle,
     SetMidDelay = SetMidDelay,
-    AreaConquestRegion = AreaConquestRegion,
-    Switch = Switch,
+	Switch = Switch,
+    AreaConquestRegion = AreaConquestRegion,				
 };
 
 return exports;

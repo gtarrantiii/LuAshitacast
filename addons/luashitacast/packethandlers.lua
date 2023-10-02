@@ -33,25 +33,6 @@ packethandlers.HandleIncoming0x1B = function(e)
     end
 end
 
-packethandlers.HandleIncoming0x5E = function(e)
-    local regioninfo = {}
-    local packet = struct.unpack('c' .. e.size, e.data, 1);
-    for i, region in pairs(gData.Constants.ConquestRegions) do
-        if(i==19)then break end --only first 18 regions are under conquest control 
-        local owner = (struct.unpack('b', packet, 0x1D + (i*4) + 0x01)-1);
-        local ownerstring = gData.Constants.ConquestNations[owner];
-        regioninfo[i] = ownerstring;
-    end
-
-    --default the cities 
-    regioninfo[19] = 'San d\'Oria';
-    regioninfo[20] = 'Bastok';
-    regioninfo[21] = 'Windurst';
-    regioninfo[22] = 'Jueno';
-
-    gData.Conquest = regioninfo;
-end
-
 packethandlers.HandleIncoming0x61 = function(e)
     local job = struct.unpack('B', e.data, 0x0C + 1);
     if (job ~= gState.PlayerJob) then
@@ -104,7 +85,7 @@ packethandlers.HandleIncoming0x28 = function(e)
                     print(chat.header('LuAshitacast') .. chat.message('Pet action ending due to action packet of type ' .. tostring(actionType) .. ' with parameters indicating interruption.'));
                 end
                 gState.PetAction = nil;
-                return;
+				return;
             end
         end
 
@@ -159,6 +140,18 @@ packethandlers.HandleIncoming0x28 = function(e)
     end
 end
 
+
+packethandlers.HandleIncoming0x5E = function(e)
+    local regioninfo = {}
+    local packet = struct.unpack('c' .. e.size, e.data, 1);
+    for i, region in pairs(gData.Constants.ConquestRegions) do
+        if(i==19)then break end --only first 18 regions are under conquest control 
+        local owner = (struct.unpack('b', packet, 0x1D + (i*4) + 0x01)-1);
+        local ownerstring = gData.Constants.ConquestNations[owner];
+        regioninfo[i] = ownerstring;
+    end 
+    gData.Conquest = regioninfo;
+end
 packethandlers.HandleActionPacket = function(packet)
     local category = struct.unpack('H', packet, 0x0A + 0x01);
     local actionId = struct.unpack('H', packet, 0x0C + 0x01);
@@ -263,32 +256,35 @@ packethandlers.HandleItemTradePacket = function(packet)
         local itemContainer = 0;
         local item = AshitaCore:GetMemoryManager():GetInventory():GetContainerItem(itemContainer, itemIndex);
 
+		gState.DelayedEquip = {};
+		gState.PlayerAction = { Block = false };
+		gState.PlayerAction.Packet = packet:totable();
+		gState.PlayerAction.Target = targetIndex;
+		gState.PlayerAction.Type = 'TradeItem';
+		
         if (item == nil) or (item.Id == 0) or (item.Count == 0) then
             gState.PlayerAction.Completion = os.clock() + gSettings.ItemBase + gSettings.ItemOffset;
         else
-            local itemname = gState.PlayerAction.Resource.Name[1];
-            if (itemname == 'Hatchet') or (itemname == 'Pickaxe') or (itemname == 'Sickle') then
-                gState.DelayedEquip = {};
-                gState.PlayerAction = { Block = false };
-                gState.PlayerAction.Packet = packet:totable();
-                gState.PlayerAction.Target = targetIndex;
-                gState.PlayerAction.Type = 'TradeItem';
-                gState.PlayerAction.Resource = AshitaCore:GetResourceManager():GetItemById(item.Id);
-                gState.PlayerAction.Completion = os.clock() + (gState.PlayerAction.Resource.CastTime * 0.25) + gSettings.ItemOffset;
-                gState.HandleEquipEvent('HandleHelm', 'auto');
-            end
+			gState.PlayerAction.Resource = AshitaCore:GetResourceManager():GetItemById(item.Id);
+			gState.PlayerAction.Completion = os.clock() + (gState.PlayerAction.Resource.CastTime * 0.25) + gSettings.ItemOffset; 
+			local itemname = gState.PlayerAction.Resource.Name[1];
+		
+			if (itemname == 'Hatchet') or (itemname == 'Pickaxe') or (itemname == 'Sickle') then
+				gState.HandleEquipEvent('HandleHelm', 'auto');
+			end
         end 
-        
-        if (gState.PlayerAction.Block == true) then
-            gState.PlayerAction = nil;
-            return;
-        end
+
+		if (gState.PlayerAction.Block == true) then
+			gState.PlayerAction = nil;
+			return;
+		end
         
         gState.Inject(0x36, gState.PlayerAction.Packet);
-    end 
+    else 
+		gState.Inject(0x36, packet:totable());
+	end 
+	
 end
-
-
 packethandlers.HandleOutgoingChunk = function(e)
     --Clear expired actions.
     local time = os.clock();
@@ -349,12 +345,12 @@ packethandlers.HandleIncomingPacket = function(e)
         gPacketHandlers.HandleIncoming0x0A(e);
     elseif (e.id == 0x1B) then
         gPacketHandlers.HandleIncoming0x1B(e);
+    elseif (e.id == 0x5E) then
+        gPacketHandlers.HandleIncoming0x5E(e);
     elseif (e.id == 0x61) then
         gPacketHandlers.HandleIncoming0x61(e);
     elseif (e.id == 0x028) then
         gPacketHandlers.HandleIncoming0x28(e);
-    elseif (e.id == 0x5E) then
-        gPacketHandlers.HandleIncoming0x5E(e);
     end
 end
 
