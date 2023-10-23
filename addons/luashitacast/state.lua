@@ -55,12 +55,18 @@ state.Init = function()
         state.Encumbrance[i] = false;
     end
     
+    local configPath = string.format('%sconfig\\addons\\luashitacast\\?.lua;', AshitaCore:GetInstallPath());
+    package.path = configPath .. package.path;
+    gState.BasePath = package.path;
+    
     if (AshitaCore:GetMemoryManager():GetParty():GetMemberIsActive(0) == 1) then
         gState.PlayerId = AshitaCore:GetMemoryManager():GetParty():GetMemberServerId(0);
         gState.PlayerName = AshitaCore:GetMemoryManager():GetParty():GetMemberName(0);
         gState.PlayerJob = AshitaCore:GetMemoryManager():GetPlayer():GetMainJob();
+        configPath = string.format('%sconfig\\addons\\luashitacast\\%s_%u\\?.lua;', AshitaCore:GetInstallPath(), gState.PlayerName, gState.PlayerId);
+        package.path = configPath .. gState.BasePath;
         gState.AutoLoadProfile();
-    end    
+    end
 end
 
 state.LoadProfile = function(profilePath)
@@ -207,10 +213,14 @@ end
 state.SafeCall = function(name,...)
     if (gProfile ~= nil) then
         if (type(gProfile[name]) == 'function') then
-            local success,err = pcall(gProfile[name],...);
-            if (not success) then
-                print(chat.header('LuAshitacast') .. chat.error('Error in profile function: ') .. chat.color1(2, name));
-                print(chat.header('LuAshitacast') .. chat.error(err));
+            if (gSettings.SafeCall) then
+                local success,err = pcall(gProfile[name],...);
+                if (not success) then
+                    print(chat.header('LuAshitacast') .. chat.error('Error in profile function: ') .. chat.color1(2, name));
+                    print(chat.header('LuAshitacast') .. chat.error(err));
+                end
+            else
+                gProfile[name](...);
             end
         elseif (gProfile[name] ~= nil) then
             print(chat.header('LuAshitacast') .. chat.error('Profile member exists but is not a function: ') .. chat.color1(2, name));
